@@ -1,0 +1,67 @@
+
+package com.worksphere;
+
+import com.worksphere.task.Task;
+import com.worksphere.task.TaskRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class TaskControllerTests {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @BeforeEach
+    void cleanDatabase() {
+        taskRepository.deleteAll();
+    }
+
+    @Test
+    void shouldCreateTask() throws Exception {
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "title": "Test WorkSphere",
+                      "description": "Testing task creation",
+                      "status": "TODO"
+                    }
+                    """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("Test WorkSphere"))
+                .andExpect(jsonPath("$.status").value("TODO"));
+    }
+
+    @Test
+    void shouldReturnBadRequestForInvalidStatus() throws Exception {
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "title": "Invalid task",
+                      "description": "Testing invalid status",
+                      "status": "ABC"
+                    }
+                    """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnNotFoundForMissingTask() throws Exception {
+        mockMvc.perform(get("/api/tasks/999"))
+                .andExpect(status().isNotFound());
+    }
+}
