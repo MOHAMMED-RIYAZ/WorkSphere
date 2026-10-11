@@ -1,5 +1,6 @@
 
 package com.worksphere;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import static org.mockito.Mockito.verify;
 import com.worksphere.task.Task;
 import com.worksphere.task.TaskController;
@@ -22,12 +23,16 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import com.worksphere.JwtService;
 @WebMvcTest(TaskController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BackendApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
+    @MockitoBean
+private JwtService jwtService;
 
     @MockitoBean
     private TaskRepository taskRepository;
