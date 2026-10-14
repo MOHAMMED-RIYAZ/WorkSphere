@@ -27,15 +27,10 @@ public class TaskController {
     public Task createTask(@Valid @RequestBody Task task) {
         return taskRepository.save(task);
     }
-
-   
-
     @GetMapping("/{id}")
     public Task getTaskById(@PathVariable Long id) {
         return findTask(id);
     }
-
-    
 @GetMapping
 public Page<Task> getAllTasks(
         @RequestParam(defaultValue = "0") int page,
@@ -82,24 +77,21 @@ Pageable pageable = PageRequest.of(
         return taskRepository.findByTitleContainingIgnoreCase(
                 search.trim(), pageable);
     }
-    
-
     return taskRepository.findAll(pageable);
 }
+@PutMapping("/{id}")
+public Task updateTask(
+        @PathVariable Long id,
+        @Valid @RequestBody Task updatedTask) {
 
+    Task existingTask = findTask(id);
+    existingTask.setTitle(updatedTask.getTitle());
+    existingTask.setDescription(updatedTask.getDescription());
+    existingTask.setDueDate(updatedTask.getDueDate());
+    existingTask.setStatus(updatedTask.getStatus());
 
-    @PutMapping("/{id}")
-    public Task updateTask(
-            @PathVariable Long id,
-            @Valid @RequestBody Task updatedTask) {
-
-        Task existingTask = findTask(id);
-        existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
-        existingTask.setStatus(updatedTask.getStatus());
-
-        return taskRepository.save(existingTask);
-    }
+    return taskRepository.save(existingTask);
+}
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: worksphere-backend:1.0
+    container_name: worksphere-backend
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    image: worksphere-frontend:1.0
+    container_name: worksphere-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,6 +1,6 @@
 
 package com.worksphere.task;
-
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,7 +21,7 @@ public class Task {
     private String title;
 
     private String description;
-
+private LocalDate dueDate;
     @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.TODO;
@@ -62,4 +62,11 @@ public class Task {
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+    public LocalDate getDueDate() {
+    return dueDate;
+}
+
+public void setDueDate(LocalDate dueDate) {
+    this.dueDate = dueDate;
+}
 }
